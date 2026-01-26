@@ -36,12 +36,14 @@ export default function LandingPage() {
               <ThemeToggle />
               <Link 
                 href="/login" 
+                target="_blank"
                 className="text-sm font-medium text-gray-900 dark:text-white hover:text-blue-600 transition"
               >
                 Sign In
               </Link>
               <Link 
-                href="/login"
+                href="/register"
+                target="_blank"
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition shadow-lg shadow-blue-200 dark:shadow-none"
               >
                 Get Started
@@ -108,6 +110,7 @@ export default function LandingPage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link 
                 href="/employee"
+                target="_blank"
                 className="w-full sm:w-auto px-8 py-4 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition shadow-xl shadow-blue-200 dark:shadow-blue-900/20 flex items-center justify-center"
             >
                 <Smartphone className="h-5 w-5 mr-2" />
@@ -115,6 +118,7 @@ export default function LandingPage() {
             </Link>
             <Link 
                 href="/admin"
+                target="_blank"
                 className="w-full sm:w-auto px-8 py-4 bg-white dark:bg-zinc-800 text-gray-900 dark:text-white border border-gray-200 dark:border-zinc-700 rounded-xl font-bold hover:bg-gray-50 dark:hover:bg-zinc-700 transition flex items-center justify-center"
             >
                 Admin Console
