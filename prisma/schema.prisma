@@ -1,0 +1,149 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Core Models
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String // Hashed
+  name      String?
+  role      String   @default("EMPLOYEE") // SUPER_ADMIN, CLIENT_ADMIN, MANAGER, EMPLOYEE
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Multi-tenancy
+  clientId String?
+  client   Client? @relation(fields: [clientId], references: [id])
+
+  // Profile (strictly for employees)
+  employeeProfile EmployeeProfile?
+
+  // Managing relations
+  managedEmployees EmployeeProfile[] @relation("Manager")
+  approvals        LeaveRequest[]    @relation("Approver")
+}
+
+model Client {
+  id        String   @id @default(uuid())
+  name      String
+  code      String   @unique
+  address   String?
+  createdAt DateTime @default(now())
+
+  // Settings (JSON for check-in rules, etc)
+  settings String? // JSON: { allowMobilePunch: boolean, geoFenceRadius: number }
+
+  users     User[]
+  branches  Branch[]
+  shifts    Shift[]
+  holidays  Holiday[]
+  leaveTypes LeaveType[]
+}
+
+model Branch {
+  id        String  @id @default(uuid())
+  name      String
+  clientId  String
+  client    Client  @relation(fields: [clientId], references: [id])
+  
+  // Geofencing
+  latitude  Float?
+  longitude Float?
+  radius    Int     @default(100) // meters
+
+  employees EmployeeProfile[]
+}
+
+model Shift {
+  id          String   @id @default(uuid())
+  name        String
+  clientId    String
+  client      Client   @relation(fields: [clientId], references: [id])
+  
+  startTime   String   // "09:00"
+  endTime     String   // "18:00"
+  gracePeriod Int      @default(15) // minutes
+
+  employees   EmployeeProfile[]
+}
+
+model EmployeeProfile {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  
+  branchId  String?
+  branch    Branch?  @relation(fields: [branchId], references: [id])
+  
+  shiftId   String?
+  shift     Shift?   @relation(fields: [shiftId], references: [id])
+
+  managerId String?
+  manager   User?    @relation("Manager", fields: [managerId], references: [id])
+
+  attendance AttendanceLog[]
+  leaves     LeaveRequest[]
+}
+
+model AttendanceLog {
+  id          String   @id @default(uuid())
+  employeeId  String
+  employee    EmployeeProfile @relation(fields: [employeeId], references: [id])
+
+  date        DateTime // Store as date only (midnight)
+  
+  inTime      DateTime?
+  outTime     DateTime?
+  
+  locationType String // OFFICE, WFH, TRAVEL, EXTERNAL
+  latitude    Float?
+  longitude   Float?
+  
+  status      String @default("ABSENT") // PRESENT, ABSENT, HALF_DAY, LATE, ON_LEAVE
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model LeaveType {
+  id        String @id @default(uuid())
+  name      String // "Sick", "Casual", "PL"
+  clientId  String
+  client    Client @relation(fields: [clientId], references: [id])
+  
+  requests  LeaveRequest[]
+}
+
+model LeaveRequest {
+  id          String        @id @default(uuid())
+  employeeId  String
+  employee    EmployeeProfile @relation(fields: [employeeId], references: [id])
+
+  leaveTypeId String
+  leaveType   LeaveType     @relation(fields: [leaveTypeId], references: [id])
+  
+  startDate   DateTime
+  endDate     DateTime
+  reason      String?
+  
+  status      String        @default("PENDING") // PENDING, APPROVED, REJECTED, CANCELLED
+  
+  approverId  String?
+  approver    User?         @relation("Approver", fields: [approverId], references: [id])
+
+  createdAt   DateTime      @default(now())
+}
+
+model Holiday {
+  id        String   @id @default(uuid())
+  name      String
+  date      DateTime
+  clientId  String
+  client    Client   @relation(fields: [clientId], references: [id])
+}

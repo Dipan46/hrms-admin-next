@@ -1,0 +1,3 @@
+Checking user: john@acme.com
+User not found. Creating...
+Error: No Client or Branch found to link user.
