@@ -162,7 +162,19 @@ This project is optimized for deployment on **Vercel**.
 
 ---
 
-## 🐛 Troubleshooting
+## � Demo Credentials
+
+To access the live demo, use the following super admin credentials:
+
+- **Email**: `superadmin@hrms.com`
+- **Password**: `superadmin123`
+
+> [!NOTE]
+> These credentials provide full system access including multi-tenant management, organization setup, and all administrative features.
+
+---
+
+## �🐛 Troubleshooting
 
 ### Database Connection Issues
 - Ensure your `DATABASE_URL` is correct and the database is accessible.
