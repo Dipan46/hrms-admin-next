@@ -50,7 +50,19 @@ A comprehensive **Human Resource Management System (HRMS)** built with **Next.js
 
 ## 📸 Preview
 
-> *Add screenshots of your dashboard here to showcase the UI.*
+![Preview](./prev/1.png)
+![Preview](./prev/2.png)
+![Preview](./prev/3.png)
+![Preview](./prev/4.png)
+![Preview](./prev/5.png)
+![Preview](./prev/6.png)
+![Preview](./prev/7.png)
+![Preview](./prev/8.png)
+![Preview](./prev/9.png)
+![Preview](./prev/10.png)
+![Preview](./prev/11.png)
+![Preview](./prev/12.png)
+![Preview](./prev/13.png)
 
 ---
 
