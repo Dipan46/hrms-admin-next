@@ -170,7 +170,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="bg-white dark:bg-zinc-950 border-t border-gray-100 dark:border-zinc-800 py-12">
         <div className="max-w-7xl mx-auto px-4 text-center text-gray-500 dark:text-gray-400">
-            <p>&copy; 2024 HRMS Pro. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} Dipan46. All rights reserved.</p>
         </div>
       </footer>
     </div>
