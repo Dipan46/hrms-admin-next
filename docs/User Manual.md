@@ -100,8 +100,8 @@ This application can be installed on your mobile device as a Web App (PWA) for q
 If you're testing the system, use these demo credentials:
 
 **Super Admin Account:**
-- **Email**: `superadmin@hrms.com`
-- **Password**: `superadmin123`
+- **Email**: `admin@hrms.com`
+- **Password**: `admin123`
 
 This account provides full access to all features including organization management, branch setup, employee management, and system-wide configurations.
 
