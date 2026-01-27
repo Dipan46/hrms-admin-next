@@ -8,7 +8,7 @@
 
 A comprehensive **Human Resource Management System (HRMS)** built with **Next.js 14**, designed to streamline employee management, attendance tracking, and leave workflows for multi-tenant organizations.
 
-🚀 **Live Demo on Vercel**: [View Deployment](https://hrms-admin-next-2on6uw1j0-dipan46s-projects.vercel.app/)
+🚀 **Live Demo on Vercel**: [View Deployment](https://hrms-admin-next.vercel.app/)
 
 ## 📖 Table of Contents
 - [Features](#-features)
