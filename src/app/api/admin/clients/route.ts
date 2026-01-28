@@ -20,7 +20,10 @@ export async function GET(req: Request) {
       orderBy: { createdAt: 'desc' },
       include: {
         _count: {
-          select: { branches: true, users: true }
+          select: { 
+            branches: true, 
+            users: { where: { role: "EMPLOYEE" } } 
+          }
         }
       }
     });

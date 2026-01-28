@@ -56,7 +56,20 @@ export async function PATCH(
         data: {
             name: body.name,
             email: body.email,
-            // Add other fields as necessary
+            employeeProfile: {
+                update: {
+                    branchId: body.branchId || null,
+                    shiftId: body.shiftId || null
+                }
+            }
+        },
+        include: {
+            employeeProfile: {
+                include: {
+                    branch: true,
+                    shift: true
+                }
+            }
         }
     });
 
