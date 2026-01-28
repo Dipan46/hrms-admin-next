@@ -43,31 +43,49 @@ export async function GET(req: Request) {
     });
 
     // Helper function to check if employee is late
-    const calculatePunctuality = (inTime: Date | null, shift: any): { isLate: boolean; punctuality: string; lateByMinutes: number } => {
-        if (!inTime || !shift?.startTime) {
+    // Compares punch-in hour:minute with shift start hour:minute
+    const calculatePunctuality = (inTime: Date | string | null, shift: any): { isLate: boolean; punctuality: string; lateByMinutes: number } => {
+        // If no inTime or no shift, return UNKNOWN
+        if (!inTime) {
+            console.log('Punctuality: No inTime provided');
+            return { isLate: false, punctuality: 'UNKNOWN', lateByMinutes: 0 };
+        }
+        
+        if (!shift || !shift.startTime) {
+            console.log('Punctuality: No shift or shift.startTime provided');
             return { isLate: false, punctuality: 'UNKNOWN', lateByMinutes: 0 };
         }
 
-        // Parse shift start time (format: "09:00")
-        const [shiftHours, shiftMinutes] = shift.startTime.split(':').map(Number);
-        const gracePeriod = shift.gracePeriod || 15; // Default 15 minutes grace
+        // Parse punch time
+        const punchDate = new Date(inTime);
+        const punchHour = punchDate.getHours();
+        const punchMinute = punchDate.getMinutes();
+        const punchTotalMinutes = punchHour * 60 + punchMinute;
 
-        // Create shift start datetime for the same day as inTime
-        const shiftStart = new Date(inTime);
-        shiftStart.setHours(shiftHours, shiftMinutes, 0, 0);
+        // Parse shift start time (format: "09:00" or "10:00")
+        const shiftTimeParts = shift.startTime.split(':');
+        const shiftHour = parseInt(shiftTimeParts[0], 10);
+        const shiftMinute = parseInt(shiftTimeParts[1], 10);
+        const shiftTotalMinutes = shiftHour * 60 + shiftMinute;
 
-        // Add grace period
-        const graceEnd = new Date(shiftStart.getTime() + gracePeriod * 60 * 1000);
+        // Grace period in minutes (default 15)
+        const gracePeriod = shift.gracePeriod || 15;
+        const graceEndMinutes = shiftTotalMinutes + gracePeriod;
 
-        // Calculate difference in minutes
-        const diffMinutes = Math.floor((inTime.getTime() - shiftStart.getTime()) / (1000 * 60));
+        // Calculate how many minutes after shift start
+        const diffMinutes = punchTotalMinutes - shiftTotalMinutes;
 
-        if (inTime <= shiftStart) {
+        console.log(`Punctuality Debug: Employee punch at ${punchHour}:${punchMinute} (${punchTotalMinutes} min), Shift starts at ${shiftHour}:${shiftMinute} (${shiftTotalMinutes} min), Grace ends at ${graceEndMinutes} min, Diff=${diffMinutes} min`);
+
+        if (punchTotalMinutes <= shiftTotalMinutes) {
+            // Punched before or exactly at shift start
             return { isLate: false, punctuality: 'EARLY', lateByMinutes: 0 };
-        } else if (inTime <= graceEnd) {
+        } else if (punchTotalMinutes <= graceEndMinutes) {
+            // Punched within grace period
             return { isLate: false, punctuality: 'ON_TIME', lateByMinutes: 0 };
         } else {
-            return { isLate: true, punctuality: 'LATE', lateByMinutes: diffMinutes - gracePeriod };
+            // Late - punched after grace period
+            return { isLate: true, punctuality: 'LATE', lateByMinutes: diffMinutes };
         }
     };
 
