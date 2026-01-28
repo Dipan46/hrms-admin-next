@@ -53,19 +53,9 @@ export async function POST(req: Request) {
                  );
                  console.log(`Geofence Fail: Distance ${distance}m > ${allowedRadius}m`);
 
-                 // SELF-HEALING FOR DEMO: Auto-update branch if it's the demo user
-                 if (session.user.email === "john@acme.com") {
-                     console.log("DEMO MODE: Auto-updating branch to user location...");
-                     await prisma.branch.update({
-                         where: { id: employee.branch.id },
-                         data: { latitude: userLat, longitude: userLon }
-                     });
-                     // Let it pass
-                 } else {
-                    return NextResponse.json({ 
-                        error: `You are outside office premises. Distance: ${Math.round(distance)}m (Allowed: ${allowedRadius}m)` 
-                    }, { status: 400 });
-                 }
+                 return NextResponse.json({ 
+                     error: `You are outside office premises. Distance: ${Math.round(distance)}m (Allowed: ${allowedRadius}m)` 
+                 }, { status: 400 });
              }
         }
     }
