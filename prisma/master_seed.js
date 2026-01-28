@@ -118,14 +118,14 @@ async function main() {
     if (!techBranch) {
         techBranch = await prisma.branch.create({
             data: {
-                name: 'Mumbai Office',
+                name: 'Kolkata HQ',
                 clientId: client2.id,
-                latitude: 19.0760,
-                longitude: 72.8777,
+                latitude: 23.4144,
+                longitude: 88.4853,
                 radius: 3000
             }
         });
-        console.log('✅ Branch created: TechStart Mumbai');
+        console.log('✅ Branch created: TechStart Kolkata HQ');
     }
 
     // TechStart Shift
