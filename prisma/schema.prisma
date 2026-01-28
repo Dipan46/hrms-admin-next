@@ -76,7 +76,7 @@ model Shift {
 model EmployeeProfile {
   id        String   @id @default(uuid())
   userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   branchId  String?
   branch    Branch?  @relation(fields: [branchId], references: [id])
@@ -85,7 +85,7 @@ model EmployeeProfile {
   shift     Shift?   @relation(fields: [shiftId], references: [id])
 
   managerId String?
-  manager   User?    @relation("Manager", fields: [managerId], references: [id])
+  manager   User?    @relation("Manager", fields: [managerId], references: [id], onDelete: SetNull)
 
   attendance AttendanceLog[]
   leaves     LeaveRequest[]
@@ -94,7 +94,7 @@ model EmployeeProfile {
 model AttendanceLog {
   id          String   @id @default(uuid())
   employeeId  String
-  employee    EmployeeProfile @relation(fields: [employeeId], references: [id])
+  employee    EmployeeProfile @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
   date        DateTime // Store as date only (midnight)
   
@@ -123,7 +123,7 @@ model LeaveType {
 model LeaveRequest {
   id          String        @id @default(uuid())
   employeeId  String
-  employee    EmployeeProfile @relation(fields: [employeeId], references: [id])
+  employee    EmployeeProfile @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
   leaveTypeId String
   leaveType   LeaveType     @relation(fields: [leaveTypeId], references: [id])
@@ -135,7 +135,7 @@ model LeaveRequest {
   status      String        @default("PENDING") // PENDING, APPROVED, REJECTED, CANCELLED
   
   approverId  String?
-  approver    User?         @relation("Approver", fields: [approverId], references: [id])
+  approver    User?         @relation("Approver", fields: [approverId], references: [id], onDelete: SetNull)
 
   createdAt   DateTime      @default(now())
 }

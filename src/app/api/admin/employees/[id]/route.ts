@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import bcrypt from "bcryptjs";
 
 export async function DELETE(
   req: Request,
@@ -51,18 +52,26 @@ export async function PATCH(
         }
     }
 
+    // Build update data
+    const updateData: any = {
+        name: body.name,
+        email: body.email,
+        employeeProfile: {
+            update: {
+                branchId: body.branchId || null,
+                shiftId: body.shiftId || null
+            }
+        }
+    };
+
+    // Only update password if provided (not empty)
+    if (body.password && body.password.trim() !== "") {
+        updateData.password = await bcrypt.hash(body.password, 10);
+    }
+
     const updatedUser = await prisma.user.update({
         where: { id },
-        data: {
-            name: body.name,
-            email: body.email,
-            employeeProfile: {
-                update: {
-                    branchId: body.branchId || null,
-                    shiftId: body.shiftId || null
-                }
-            }
-        },
+        data: updateData,
         include: {
             employeeProfile: {
                 include: {
